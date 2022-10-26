@@ -1,0 +1,18 @@
+# Binaries
+bin/
+
+# Build
+out/
+build/
+.cache/
+compile_commands.json
+
+# Visual Studio
+.vscode/
+.vs/
+
+# JetBrains
+.idea/
+
+# Neovim
+neovim-cmake-config.json

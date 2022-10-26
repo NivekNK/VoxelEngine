@@ -1,0 +1,18 @@
+[submodule "Engine/glm"]
+	path = Engine/vendor/glm
+	url = https://github.com/g-truc/glm
+[submodule "Engine/GLFW"]
+	path = Engine/vendor/GLFW
+	url = https://github.com/glfw/glfw
+[submodule "Engine/vendor/stb"]
+	path = Engine/vendor/stb
+	url = https://github.com/nothings/stb
+[submodule "Engine/vendor/tinyobjloader"]
+	path = Engine/vendor/tinyobjloader
+	url = https://github.com/tinyobjloader/tinyobjloader
+[submodule "Engine/vendor/vk-bootstrap"]
+	path = Engine/vendor/vk-bootstrap
+	url = https://github.com/charles-lunarg/vk-bootstrap
+[submodule "Engine/vendor/VMA"]
+	path = Engine/vendor/VMA
+	url = https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator
