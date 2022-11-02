@@ -16,3 +16,12 @@
 [submodule "Engine/vendor/VMA"]
 	path = Engine/vendor/VMA
 	url = https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator
+[submodule "Engine/vendor/spdlog"]
+	path = Engine/vendor/spdlog
+	url = https://github.com/gabime/spdlog
+[submodule "Engine/vendor/fmt"]
+	path = Engine/vendor/fmt
+	url = https://github.com/fmtlib/fmt
+[submodule "Engine/vendor/eventpp"]
+	path = Engine/vendor/eventpp
+	url = https://github.com/wqking/eventpp
