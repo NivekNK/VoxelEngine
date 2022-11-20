@@ -16,7 +16,7 @@ namespace nk {
 
         void Draw();
 
-        bool LoadShaderModule();
+        bool LoadShaderModule(const char* file_path, VkShaderModule* out_shader_module);
 
     private:
         void InitVulkan(const std::string& application_name);
@@ -25,6 +25,7 @@ namespace nk {
         void InitDefaultRenderpass();
         void InitFramebuffers();
         void InitSyncStructures();
+        void InitPipeline();
 
         VkCommandPoolCreateInfo CommandPoolCreateInfo(u32 queue_family_index, VkCommandPoolCreateFlags flags = 0);
         VkCommandBufferAllocateInfo CmdBufferAllocInfo(VkCommandPool pool, u32 count = 1, VkCommandBufferLevel level = VK_COMMAND_BUFFER_LEVEL_PRIMARY);
@@ -54,5 +55,8 @@ namespace nk {
         VkSemaphore m_PresentSemaphore;
         VkSemaphore m_RenderSemaphore;
         VkFence m_RenderFence;
+
+        VkPipelineLayout m_TrianglePipelineLayout;
+        VkPipeline m_TrianglePipeline;
     };
 }

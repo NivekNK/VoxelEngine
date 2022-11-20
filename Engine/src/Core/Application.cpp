@@ -62,8 +62,4 @@ namespace nk {
         m_Running = false;
         return true;
     }
-
-    bool Application::OnWindowResize(WindowResizeEvent& event) {
-        return true;
-    }
 }  // namespace nk

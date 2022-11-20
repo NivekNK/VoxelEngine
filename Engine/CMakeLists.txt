@@ -20,7 +20,8 @@ elseif (UNIX AND NOT APPLE)
     )
 endif()
 
-find_package(Vulkan REQUIRED)
+find_package(Vulkan REQUIRED COMPONENTS glslc)
+find_program(GLSLC_EXC NAMES glslc HINTS Vulkan::glslc)
 
 add_subdirectory(vendor/fmt)
 add_subdirectory(vendor/spdlog)
@@ -91,6 +92,11 @@ file(GLOB HLSL_SOURCE_FILES
     "shaders/*.frag.hlsl"
 )
 
+file(GLOB GLSL_SOURCE_FILES
+    "shaders/*.vert.glsl"
+    "shaders/*.frag.glsl"
+)
+
 function(shader_profile PROFILE SHADER_STAGE)
     if(${SHADER_STAGE} STREQUAL "vert")
         set(${PROFILE} "vs_6_1" PARENT_SCOPE)
@@ -115,6 +121,20 @@ foreach(HLSL ${HLSL_SOURCE_FILES})
     )
     list(APPEND SPIRV_BINARY_FILES ${SPIRV})
 endforeach(HLSL)
+
+foreach(GLSL ${GLSL_SOURCE_FILES})
+    get_filename_component(FILE_NAME ${GLSL} NAME_WLE)
+    get_filename_component(SHADER_EXT ${FILE_NAME} LAST_EXT)
+    string(REPLACE "." "" SHADER_STAGE ${SHADER_EXT})
+    set(SPIRV "${PROJECT_BINARY_DIR}/shaders/${FILE_NAME}.spv")
+    add_custom_command(
+        OUTPUT ${SPIRV}
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${PROJECT_BINARY_DIR}/shaders/"
+        COMMAND ${GLSLC_EXC} -fshader-stage=${SHADER_STAGE} ${GLSL} -o ${SPIRV}
+        DEPENDS ${GLSL}
+    )
+    list(APPEND SPIRV_BINARY_FILES ${SPIRV})
+endforeach()
 
 add_custom_target(SHADERS DEPENDS ${SPIRV_BINARY_FILES})
 

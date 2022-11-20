@@ -7,6 +7,7 @@
 #include <glm/glm.hpp>
 
 #include "Core/Application.h"
+#include "Core/Rendering/PipelineBuilder.h"
 
 namespace nk {
     Renderer::Renderer(const std::string& application_name, std::shared_ptr<Window> window)
@@ -17,6 +18,7 @@ namespace nk {
         InitDefaultRenderpass();
         InitFramebuffers();
         InitSyncStructures();
+        InitPipeline();
     }
 
     Renderer::~Renderer() {
@@ -72,6 +74,9 @@ namespace nk {
 
         vkCmdBeginRenderPass(cmd, &renderpass_begin_info, VK_SUBPASS_CONTENTS_INLINE);
 
+        vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_TrianglePipeline);
+        vkCmdDraw(cmd, 3, 1, 0, 0);
+
         vkCmdEndRenderPass(cmd);
 
         VK_CHECK(vkEndCommandBuffer(cmd));
@@ -100,6 +105,33 @@ namespace nk {
         VK_CHECK(vkQueuePresentKHR(m_GraphicsQueue, &present_info));
 
         ++m_FrameNumber;
+    }
+
+    bool Renderer::LoadShaderModule(const char* file_path, VkShaderModule* out_shader_module) {
+        std::ifstream file(file_path, std::ios::ate | std::ios::binary);
+        if (!file.is_open())
+            return false;
+
+        size_t file_size = (size_t)file.tellg();
+        std::vector<u32> buffer(file_size / sizeof(u32));
+
+        file.seekg(0);
+        file.read((char*)buffer.data(), file_size);
+        file.close();
+
+        VkShaderModuleCreateInfo shader_module_info = {};
+        shader_module_info.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+        shader_module_info.pNext = nullptr;
+        shader_module_info.codeSize = buffer.size() * sizeof(u32);
+        shader_module_info.pCode = buffer.data();
+
+        VkShaderModule shader_module;
+        if (vkCreateShaderModule(m_Device, &shader_module_info, nullptr, &shader_module) != VK_SUCCESS) {
+            return false;
+        }
+
+        *out_shader_module = shader_module;
+        return true;
     }
 
     void Renderer::InitVulkan(const std::string& application_name) {
@@ -215,6 +247,40 @@ namespace nk {
         semaphore_info.flags = 0;
         VK_CHECK(vkCreateSemaphore(m_Device, &semaphore_info, nullptr, &m_PresentSemaphore));
         VK_CHECK(vkCreateSemaphore(m_Device, &semaphore_info, nullptr, &m_RenderSemaphore));
+    }
+
+    void Renderer::InitPipeline() {
+        VkShaderModule triangle_frag_shader;
+        if (!LoadShaderModule("shaders/b_triangle.frag.spv", &triangle_frag_shader)) {
+            CoreWarn("Error when building the triangle fragment shader module.");
+        } else {
+            CoreDebug("Triangle fragment shader created.");
+        }
+
+        VkShaderModule triangle_vert_shader;
+        if (!LoadShaderModule("shaders/b_triangle.vert.spv", &triangle_vert_shader)) {
+            CoreWarn("Error when building the triangle vertex shader module.");
+        } else {
+            CoreDebug("Triangle vertex shader created.");
+        }
+
+        PipelineBuilder pipeline_builder;
+
+        VkPipelineLayoutCreateInfo pipeline_layout_info = pipeline_builder.LayoutCreateInfo();
+        VK_CHECK(vkCreatePipelineLayout(m_Device, &pipeline_layout_info, nullptr, &m_TrianglePipelineLayout));
+
+        pipeline_builder.AddShaderStage(VK_SHADER_STAGE_VERTEX_BIT, triangle_vert_shader);
+        pipeline_builder.AddShaderStage(VK_SHADER_STAGE_FRAGMENT_BIT, triangle_frag_shader);
+
+        pipeline_builder.SetInputAssemblyInfo(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+
+        pipeline_builder.SetViewport(0.0f, 0.0f, (f32)m_Window->GetWidth(), (f32)m_Window->GetHeight(), 0.0f, 1.0f);
+        pipeline_builder.SetScissor({ 0, 0 }, { m_Window->GetWidth(), m_Window->GetHeight() });
+
+        pipeline_builder.SetRasterizationInfo(VK_POLYGON_MODE_FILL);
+
+        pipeline_builder.SetPipelineLayout(m_TrianglePipelineLayout);
+        m_TrianglePipeline = pipeline_builder.BuildPipeline(m_Device, m_RenderPass);
     }
 
     VkCommandPoolCreateInfo Renderer::CommandPoolCreateInfo(u32 queue_family_index, VkCommandPoolCreateFlags flags) {
