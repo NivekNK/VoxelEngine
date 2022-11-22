@@ -28,8 +28,6 @@ add_subdirectory(vendor/spdlog)
 add_subdirectory(vendor/GLFW)
 add_subdirectory(vendor/glm)
 add_subdirectory(vendor/tinyobjloader)
-add_subdirectory(vendor/vk-bootstrap)
-add_subdirectory(vendor/VMA)
 add_subdirectory(vendor/eventpp)
 
 file(GLOB SOURCES CMAKE_CONFIGURE_DEPENDS 
@@ -47,8 +45,6 @@ PUBLIC
     spdlog::spdlog_header_only
     glfw
     Vulkan::Vulkan
-    vk-bootstrap::vk-bootstrap
-    VulkanMemoryAllocator
     glm
     tinyobjloader
 )
@@ -66,8 +62,6 @@ PUBLIC
     vendor/glm
 PRIVATE
     ${Vulkan_INCLUDE_DIR}
-    vendor/vk-bootstrap/src
-    vendor/VMA/include
     vendor/GLFW/include
     vendor/stb
     vendor/tinyobjloader

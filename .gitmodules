@@ -10,12 +10,6 @@
 [submodule "Engine/vendor/tinyobjloader"]
 	path = Engine/vendor/tinyobjloader
 	url = https://github.com/tinyobjloader/tinyobjloader
-[submodule "Engine/vendor/vk-bootstrap"]
-	path = Engine/vendor/vk-bootstrap
-	url = https://github.com/charles-lunarg/vk-bootstrap
-[submodule "Engine/vendor/VMA"]
-	path = Engine/vendor/VMA
-	url = https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator
 [submodule "Engine/vendor/spdlog"]
 	path = Engine/vendor/spdlog
 	url = https://github.com/gabime/spdlog
