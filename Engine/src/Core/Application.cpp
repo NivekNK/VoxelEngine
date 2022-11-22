@@ -20,7 +20,7 @@ namespace nk {
             Application::OnEvent(std::forward<decltype(arg)>(arg));
         });
 
-        m_Renderer = std::make_unique<Renderer>("NKEngine", m_Window);
+        m_Renderer = std::make_unique<Renderer>(m_Window);
 
         m_Dispatcher.AddListener<WindowCloseEvent>(
             NK_BIND_EVENT_FN(Application::OnWindowClose)
@@ -37,8 +37,10 @@ namespace nk {
 
             m_Window->OnUpdate(0);
 
-            m_Renderer->Draw();
+            m_Renderer->DrawFrame();
         }
+
+        m_Renderer->WaitEnd();
     }
 
     void Application::OnEvent(Event& event) {

@@ -17,3 +17,6 @@ typedef std::int64_t i64;
 // Floating poit types
 typedef float f32;
 typedef double f64;
+
+#define NK_MAX(a,b) (((a) > (b)) ? (a) : (b))
+#define NK_MIN(a,b) (((a) < (b)) ? (a) : (b))
