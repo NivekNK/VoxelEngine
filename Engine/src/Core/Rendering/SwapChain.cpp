@@ -99,7 +99,7 @@ VkResult SwapChain::submitCommandBuffers(
   vkResetFences(device->device(), 1, &inFlightFences[currentFrame]);
   if (vkQueueSubmit(device->graphicsQueue(), 1, &submitInfo, inFlightFences[currentFrame]) !=
       VK_SUCCESS) {
-    throw std::runtime_error("failed to submit draw command buffer!");
+    CoreError("failed to submit draw command buffer!");
   }
 
   VkPresentInfoKHR presentInfo = {};
@@ -167,7 +167,7 @@ void SwapChain::createSwapChain() {
   createInfo.oldSwapchain = VK_NULL_HANDLE;
 
   if (vkCreateSwapchainKHR(device->device(), &createInfo, nullptr, &swapChain) != VK_SUCCESS) {
-    throw std::runtime_error("failed to create swap chain!");
+    CoreError("failed to create swap chain!");
   }
 
   // we only specified a minimum number of images in the swap chain, so the implementation is
@@ -198,7 +198,7 @@ void SwapChain::createImageViews() {
 
     if (vkCreateImageView(device->device(), &viewInfo, nullptr, &swapChainImageViews[i]) !=
         VK_SUCCESS) {
-      throw std::runtime_error("failed to create texture image view!");
+      CoreError("failed to create texture image view!");
     }
   }
 }
@@ -260,7 +260,7 @@ void SwapChain::createRenderPass() {
   renderPassInfo.pDependencies = &dependency;
 
   if (vkCreateRenderPass(device->device(), &renderPassInfo, nullptr, &renderPass) != VK_SUCCESS) {
-    throw std::runtime_error("failed to create render pass!");
+    CoreError("failed to create render pass!");
   }
 }
 
@@ -284,7 +284,7 @@ void SwapChain::createFramebuffers() {
             &framebufferInfo,
             nullptr,
             &swapChainFramebuffers[i]) != VK_SUCCESS) {
-      throw std::runtime_error("failed to create framebuffer!");
+      CoreError("failed to create framebuffer!");
     }
   }
 }
@@ -332,7 +332,7 @@ void SwapChain::createDepthResources() {
     viewInfo.subresourceRange.layerCount = 1;
 
     if (vkCreateImageView(device->device(), &viewInfo, nullptr, &depthImageViews[i]) != VK_SUCCESS) {
-      throw std::runtime_error("failed to create texture image view!");
+      CoreError("failed to create texture image view!");
     }
   }
 }
@@ -356,7 +356,7 @@ void SwapChain::createSyncObjects() {
         vkCreateSemaphore(device->device(), &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]) !=
             VK_SUCCESS ||
         vkCreateFence(device->device(), &fenceInfo, nullptr, &inFlightFences[i]) != VK_SUCCESS) {
-      throw std::runtime_error("failed to create synchronization objects for a frame!");
+      CoreError("failed to create synchronization objects for a frame!");
     }
   }
 }

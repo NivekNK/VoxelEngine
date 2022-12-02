@@ -7,6 +7,7 @@ namespace nk {
         m_Device = std::make_shared<lve::Device>(window);
         m_SwapChain = std::make_unique<lve::SwapChain>(m_Device, VkExtent2D{window->GetWidth(), window->GetHeight()});
         
+        LoadModels();
         CreatePipelineLayout();
         CreatePipeline();
         CreateCommandBuffers();
@@ -14,6 +15,16 @@ namespace nk {
 
     Renderer::~Renderer() {
         vkDestroyPipelineLayout(m_Device->device(), m_PipelineLayout, nullptr);
+    }
+
+    void Renderer::LoadModels() {
+        std::vector<Model::Vertex> vertices {
+            {{ 0.0f,-0.5f}},
+            {{ 0.5f, 0.5f}},
+            {{-0.5f, 0.5f}}
+        };
+        
+        m_Model = std::make_unique<Model>(m_Device, vertices);
     }
 
     void Renderer::CreatePipelineLayout() {
@@ -34,8 +45,8 @@ namespace nk {
         pipelineConfig.pipelineLayout = m_PipelineLayout;
         m_Pipeline = std::make_unique<Pipeline>(
             m_Device,
-            "shaders/colored_triangle.vert.spv",
-            "shaders/colored_triangle.frag.spv",
+            "shaders/simple_shader.vert.spv",
+            "shaders/simple_shader.frag.spv",
             pipelineConfig
         );
     }
@@ -78,7 +89,8 @@ namespace nk {
             vkCmdBeginRenderPass(m_CommandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
             m_Pipeline->Bind(m_CommandBuffers[i]);
-            vkCmdDraw(m_CommandBuffers[i], 3, 1, 0, 0);
+            m_Model->Bind(m_CommandBuffers[i]);
+            m_Model->Draw(m_CommandBuffers[i]);
 
             vkCmdEndRenderPass(m_CommandBuffers[i]);
             if (vkEndCommandBuffer(m_CommandBuffers[i]) != VK_SUCCESS) {
