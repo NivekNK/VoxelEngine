@@ -19,6 +19,9 @@ namespace nk {
 
         [[nodiscard]] u16 GetWidth() const { return m_Data.Width; }
         [[nodiscard]] u16 GetHeight() const { return m_Data.Height; }
+        std::pair<u16, u16> GetExtent() const { return {m_Data.Width, m_Data.Height}; }
+        bool WasWindowResized() const { return m_Data.WindowResized; }
+        void ResetWindowResizedFlag() { m_Data.WindowResized = false; }
 
         void SetEventCallback(const EventCallbackFn& callback) {
             m_Data.EventCallback = callback;
@@ -33,6 +36,7 @@ namespace nk {
             std::string Name;
             u16 Width;
             u16 Height;
+            bool WindowResized;
 
             EventCallbackFn EventCallback;
         };

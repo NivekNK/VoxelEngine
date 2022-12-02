@@ -37,7 +37,7 @@ namespace nk {
         }
 
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
         m_Window = glfwCreateWindow(
             m_Data.Width, m_Data.Height, m_Data.Name.c_str(), nullptr, nullptr
@@ -138,6 +138,7 @@ namespace nk {
             m_Window,
             [](GLFWwindow* window, const i32 width, const i32 height) {
                 WindowData& data = GetWindowData(window);
+                data.WindowResized = true;
                 data.Width = width;
                 data.Height = height;
 

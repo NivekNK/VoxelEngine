@@ -24,7 +24,10 @@ namespace nk {
         void CreatePipelineLayout();
         void CreatePipeline();
         void CreateCommandBuffers();
+        void RecreateSwapChain();
+        void RecordCommandBuffer(i32 imageIndex);
 
+        std::shared_ptr<Window> m_Window;
         std::shared_ptr<lve::Device> m_Device;
         std::unique_ptr<lve::SwapChain> m_SwapChain;
         std::unique_ptr<Pipeline> m_Pipeline;

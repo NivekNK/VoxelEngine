@@ -1,11 +1,13 @@
-struct VSOutput
-{
-    [[vk::location(0)]] float4 Color : SV_Target;
+struct VSInput {
+	[[vk::location(0)]] float3 Color : COLOR0;
 };
 
-VSOutput main()
-{
+struct VSOutput {
+    float4 Color : SV_Target;
+};
+
+VSOutput main(VSInput input) {
 	VSOutput output = (VSOutput)0;
-	output.Color = float4(1.0f, 1.0f, 0.0f, 1.0f);
+	output.Color = float4(input.Color, 1.0f);
 	return output;
 }
